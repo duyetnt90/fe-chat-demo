@@ -4,6 +4,15 @@ cd /root/path
 cp .env.example .env
 npm install
 npm run dev
+
+src/
+├── api/            ✅ FE
+├── services/       ✅ FE
+├── context/        ✅ FE
+├── hooks/          ✅ FE
+├── socket/         ✅ FE
+├── pages/          ✅ FE
+├── components/     ✅ FE
 ```
 # React + TypeScript + Vite
 

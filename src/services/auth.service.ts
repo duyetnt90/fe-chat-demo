@@ -9,8 +9,10 @@ export const authService = {
         const res = await login(data);
 
         const user = res.data;
-
+        console.log("user ==> ", user)
         cache.set(USER_KEY, user);
+
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
 
         return user;
     },
@@ -21,12 +23,26 @@ export const authService = {
         const user = res.data;
 
         cache.set(USER_KEY, user);
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
 
         return user;
     },
 
     getCurrentUser(): User | null {
-        return cache.get<User>(USER_KEY);
+        // 1. check memory trước
+        const cached = cache.get(USER_KEY);
+        if (cached) return cached;
+        // 2. fallback localStorage
+        const stored = localStorage.getItem(USER_KEY);
+
+        if (stored) {
+            const user = JSON.parse(stored);
+            // sync lại memory
+            cache.set(USER_KEY, user);
+            return user;
+        }
+
+        return null;
     },
 
     logout() {

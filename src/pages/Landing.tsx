@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { register, login } from "../api/auth.api";
+import { authService } from "../services/auth.service.ts";
 import type { RegisterPayload } from "../types/auth.type";
 import { useNavigate } from "react-router-dom";
 
@@ -19,12 +19,12 @@ export default function Landing() {
 
         try {
             if (isLogin) {
-                await login({
+                await authService.login({
                     email: form.email,
                     password: form.password
                 });
             } else {
-                await register(form);
+                await authService.register(form);
             }
 
             navigate("/chat");
