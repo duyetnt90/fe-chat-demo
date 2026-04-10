@@ -25,32 +25,34 @@ export default function ChatBox() {
     // ✅ load message + socket realtime
     useEffect(() => {
         if (!conversationId) return;
-        socketService.onConnect(() => {
-            socketService.joinRoom(conversationId)
-        })
+
         // load history
         messageService.get(conversationId).then((data) => {
             setMessages(data);
         });
 
+        socketService.onConnect(() => {
+            socketService.joinRoom(conversationId)
+        })
+
         // listen socket
-        // const handleMessage = (msg: any) => {
-        //     if (msg.conversationId !== conversationId) return;
-        //
-        //     console.log("Log message: ", msg)
-        //
-        //     setMessages((prev) => {
-        //         const exists = prev.some((m) => m._id === msg._id);
-        //         if (exists) return prev;
-        //
-        //         return [...prev, msg];
-        //     });
-        // };
-        //
-        // socketService.onMessage(handleMessage);
+        const handleMessage = (msg: any) => {
+            if (msg.conversationId !== conversationId) return;
+
+            console.log("Log message: ", msg)
+
+            setMessages((prev) => {
+                const exists = prev.some((m) => m._id === msg._id);
+                if (exists) return prev;
+
+                return [...prev, msg];
+            });
+        };
+
+        socketService.onReceiveMessage(handleMessage);
 
         return () => {
-            // socketService.offMessage(handleMessage);
+            socketService.offReceiveMessage();
         };
     }, [conversationId]);
 
@@ -73,22 +75,6 @@ export default function ChatBox() {
 
         socketService.sendMessage(saved);
 
-        // listen socket
-        const handleMessage = (msg: any) => {
-            if (msg.conversationId !== conversationId) return;
-
-            console.log("Log message: ", msg)
-
-            setMessages((prev) => {
-                const exists = prev.some((m) => m._id === msg._id);
-                if (exists) return prev;
-
-                return [...prev, msg];
-            });
-        };
-        socketService.onMessage(handleMessage);
-
-        // setMessages((prev) => [...prev, saved]);
         setText("");
     };
 

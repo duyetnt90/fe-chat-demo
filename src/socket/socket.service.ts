@@ -16,7 +16,7 @@ class SocketService {
         });
 
         this.socket?.on(SOCKET_EVENTS.CONNECT, () => {
-            console.log("✅ Socket connectedddd :", this.socket?.id);
+            console.log("✅ Socket connected :", this.socket?.id);
         });
 
         this.socket?.on(SOCKET_EVENTS.DISCONNECT, () => {
@@ -24,9 +24,14 @@ class SocketService {
         });
     }
 
-    onConnect(callback: ()=> void) {
-        console.log("✅ Socket id :", this.socket?.id);
-        this.socket?.on(SOCKET_EVENTS.CONNECT, callback)
+    onConnect(callback: () => void) {
+        if (this.socket?.connected) {
+            console.log("✅ Socket id :", this.socket?.id);
+            callback(); // ✅ đã connect thì gọi luôn
+            return;
+        }
+
+        this.socket?.once(SOCKET_EVENTS.CONNECT, callback);
     }
 
     disconnect() {
@@ -47,14 +52,6 @@ class SocketService {
     // =========================
     sendMessage(payload: SendMessagePayload) {
         this.socket?.emit(SOCKET_EVENTS.SEND_MESSAGE, payload);
-    }
-
-    onMessage(callback: (data: any) => void ) {
-        this.socket?.on(SOCKET_EVENTS.RECEIVE_MESSAGE, callback)
-    }
-
-    offMessage(callback: (data: any) => void ) {
-        this.socket?.off(SOCKET_EVENTS.RECEIVE_MESSAGE, callback)
     }
 
     onReceiveMessage(callback: (data: ReceiveMessagePayload) => void) {

@@ -3,22 +3,11 @@ import { userService } from "../services/user.service";
 import { authService } from "../services/auth.service";
 import { conversationService } from "../services/conversation.service";
 import { useChat } from "../hooks/userChat.ts";
-import {socketService} from "../socket/socket.service.ts";
 
 export default function UserList() {
     const [users, setUsers] = useState<any[]>([]);
-    const { setCurrentChat, setConversations, currentChat } = useChat();
-
+    const { setCurrentChat, setConversations } = useChat();
     const currentUser = authService.getCurrentUser();
-    const conversationId = currentChat?._id;
-
-    useEffect(() => {
-        if (!conversationId) return;
-        socketService.onConnect(() => {
-            socketService.joinRoom(conversationId)
-        })
-
-    }, [conversationId]);
 
     useEffect(() => {
         userService.getUsers(currentUser._id).then(setUsers);
