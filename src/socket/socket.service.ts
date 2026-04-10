@@ -10,19 +10,23 @@ class SocketService {
 
     connect(userId: string) {
         if (this.socket) return;
-
         this.socket = io(import.meta.env.VITE_SOCKET_URL, {
             query: { userId },
             transports: ["websocket"],
         });
 
-        this.socket.on(SOCKET_EVENTS.CONNECT, () => {
-            console.log("✅ Socket connected:", this.socket?.id);
+        this.socket?.on(SOCKET_EVENTS.CONNECT, () => {
+            console.log("✅ Socket connectedddd :", this.socket?.id);
         });
 
-        this.socket.on(SOCKET_EVENTS.DISCONNECT, () => {
+        this.socket?.on(SOCKET_EVENTS.DISCONNECT, () => {
             console.log("❌ Socket disconnected");
         });
+    }
+
+    onConnect(callback: ()=> void) {
+        console.log("✅ Socket id :", this.socket?.id);
+        this.socket?.on(SOCKET_EVENTS.CONNECT, callback)
     }
 
     disconnect() {
@@ -33,9 +37,9 @@ class SocketService {
     // =========================
     // ROOM
     // =========================
-    joinRoom(roomId: string) {
-        console.log("Join success!")
-        this.socket?.emit(SOCKET_EVENTS.JOIN_ROOM, roomId);
+    joinRoom(conversationId: string) {
+        console.log("Join success!", conversationId)
+        this.socket?.emit(SOCKET_EVENTS.JOIN_ROOM, conversationId);
     }
 
     // =========================
@@ -52,6 +56,7 @@ class SocketService {
     offMessage(callback: (data: any) => void ) {
         this.socket?.off(SOCKET_EVENTS.RECEIVE_MESSAGE, callback)
     }
+
     onReceiveMessage(callback: (data: ReceiveMessagePayload) => void) {
         this.socket?.on(SOCKET_EVENTS.RECEIVE_MESSAGE, callback);
     }

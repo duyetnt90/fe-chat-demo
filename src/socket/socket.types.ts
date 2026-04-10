@@ -1,12 +1,12 @@
 export interface SendMessagePayload {
     roomId: string;
-    text: string;
+    context: string;
     senderId: string;
 }
 
 export interface ReceiveMessagePayload {
     roomId: string;
-    text: string;
+    context: string;
     senderId: string;
     createdAt: string;
 }
