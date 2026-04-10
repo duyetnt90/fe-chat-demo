@@ -31,7 +31,9 @@ export const authService = {
     getCurrentUser(): User | null {
         // 1. check memory trước
         const cached = cache.get(USER_KEY);
-        if (cached) return cached;
+        if (cached) {
+            return cached?.user;
+        }
         // 2. fallback localStorage
         const stored = localStorage.getItem(USER_KEY);
 
@@ -41,7 +43,6 @@ export const authService = {
             cache.set(USER_KEY, user);
             return user;
         }
-
         return null;
     },
 

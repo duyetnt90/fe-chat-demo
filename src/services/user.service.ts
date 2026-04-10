@@ -1,4 +1,4 @@
-import api from "../api/axios";
+import { getUsers, findUserById } from "../api/user.api.ts";
 import { cache } from "../cache/cache";
 import type { User } from "../types/auth.type";
 
@@ -9,10 +9,14 @@ export const userService = {
         const cached = cache.get<User>(cacheKey);
         if (cached) return cached;
 
-        const res = await api.get<User>(`/users/${id}`);
+        const res = await findUserById(id);
 
         cache.set(cacheKey, res.data);
 
+        return res.data;
+    },
+    getUsers: async (userId: string) => {
+        const res = await getUsers(userId);
         return res.data;
     }
 };

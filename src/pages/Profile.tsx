@@ -6,8 +6,8 @@ export default function Profile() {
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        const currentUser = authService.getCurrentUser();
-        setUser(currentUser);
+        const user: User = authService.getCurrentUser();
+        setUser(user);
     }, []);
 
     return (

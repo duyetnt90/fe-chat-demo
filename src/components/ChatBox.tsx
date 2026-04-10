@@ -3,6 +3,7 @@ import { useChat } from "../hooks/userChat.ts";
 import { messageService } from "../services/message.service";
 import { authService } from "../services/auth.service";
 import { socketService } from "../socket/socket.service";
+import type {User} from "../types/auth.type.ts";
 
 export default function ChatBox() {
     const { currentChat } = useChat();
@@ -10,7 +11,7 @@ export default function ChatBox() {
     const [messages, setMessages] = useState<any[]>([]);
     const [text, setText] = useState("");
 
-    const { user } = authService.getCurrentUser();
+    const user: User = authService.getCurrentUser();
 
     const senderId = user._id;
     const conversationId = currentChat?._id;
