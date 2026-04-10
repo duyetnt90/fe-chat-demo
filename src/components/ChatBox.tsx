@@ -1,15 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useChat } from "../hooks/userChat.ts";
 import { messageService } from "../services/message.service";
 import { authService } from "../services/auth.service";
 import { socketService } from "../socket/socket.service";
-import type {User} from "../types/auth.type.ts";
+import type { User } from "../types/auth.type.ts";
 
 export default function ChatBox() {
     const { currentChat } = useChat();
 
     const [messages, setMessages] = useState<any[]>([]);
-    const [text, setText] = useState("");
+    const [content, setText] = useState("");
+
+    const scrollRef = useRef<HTMLDivElement>(null);
 
     const user: User = authService.getCurrentUser();
 
@@ -20,44 +22,115 @@ export default function ChatBox() {
         (id: string) => id !== senderId
     );
 
+    // ✅ load message + socket realtime
     useEffect(() => {
         if (!conversationId) return;
 
-        messageService.get(conversationId).then(setMessages);
-
-        socketService.onMessage((msg) => {
-            setMessages((prev) => [...prev, msg]);
+        // load history
+        messageService.get(conversationId).then((data) => {
+            setMessages(data);
         });
+
+        // listen socket
+        const handleMessage = (msg: any) => {
+            if (msg.conversationId === conversationId) {
+                setMessages((prev) => [...prev, msg]);
+            }
+        };
+
+        socketService.onMessage(handleMessage);
+
+        return () => {
+            socketService.offMessage(handleMessage);
+        };
     }, [conversationId]);
 
+    // ✅ auto scroll xuống cuối
+    useEffect(() => {
+        scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
     const send = async () => {
+        if (!content.trim() || !conversationId) return;
+
         const msg = {
             conversationId,
             senderId,
             receiverId,
-            text,
+            content,
         };
 
         const saved = await messageService.send(msg);
 
         socketService.sendMessage(saved);
 
-        setMessages((prev) => [...prev, saved]);
+        // setMessages((prev) => [...prev, saved]);
         setText("");
     };
 
-    if (!currentChat) return <div>Select a conversation</div>;
+    if (!currentChat) return <div style={{ flex: 1 }}>Select a conversation</div>;
 
     return (
-        <div>
-            <h3>Chat</h3>
+        <div style={{
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            height: "100vh"
+        }}>
+            <h4 style={{ padding: "10px" }}>Chat</h4>
 
-            {messages.map((m, i) => (
-                <div key={i}>{m.text}</div>
-            ))}
+            {/* MESSAGE LIST */}
+            <div style={{
+                flex: 1,
+                overflowY: "auto",
+                padding: "10px",
+                background: "#f5f5f5"
+            }}>
+                {messages.map((m) => {
+                    const isMe = m.senderId === senderId;
 
-            <input value={text} onChange={(e) => setText(e.target.value)} />
-            <button onClick={send}>Send</button>
+                    return (
+                        <div
+                            key={m._id} // ✅ fix key duplicate
+                            style={{
+                                display: "flex",
+                                justifyContent: isMe ? "flex-end" : "flex-start",
+                                marginBottom: 10,
+                            }}
+                        >
+                            <div
+                                style={{
+                                    padding: "8px 12px",
+                                    borderRadius: 12,
+                                    background: isMe ? "#0d6efd" : "#e4e6eb",
+                                    color: isMe ? "#fff" : "#000",
+                                    maxWidth: "60%",
+                                }}
+                            >
+                                {m.content}
+                            </div>
+                        </div>
+                    );
+                })}
+
+                <div ref={scrollRef} />
+            </div>
+
+            {/* INPUT */}
+            <div style={{
+                display: "flex",
+                gap: 10,
+                padding: 10,
+                borderTop: "1px solid #ddd"
+            }}>
+                <input
+                    value={content}
+                    onChange={(e) => setText(e.target.value)}
+                    placeholder="Type message..."
+                    style={{ flex: 1, padding: 8 }}
+                />
+                <button onClick={send}>Send</button>
+            </div>
         </div>
     );
 }

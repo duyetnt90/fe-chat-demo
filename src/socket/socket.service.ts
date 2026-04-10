@@ -48,6 +48,10 @@ class SocketService {
     onMessage(callback: (data: any) => void ) {
         this.socket?.on(SOCKET_EVENTS.RECEIVE_MESSAGE, callback)
     }
+
+    offMessage(callback: (data: any) => void ) {
+        this.socket?.off(SOCKET_EVENTS.RECEIVE_MESSAGE, callback)
+    }
     onReceiveMessage(callback: (data: ReceiveMessagePayload) => void) {
         this.socket?.on(SOCKET_EVENTS.RECEIVE_MESSAGE, callback);
     }
