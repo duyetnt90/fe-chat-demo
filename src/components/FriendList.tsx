@@ -1,34 +1,35 @@
 import { useEffect, useState } from "react";
-import { userService } from "../services/user.service";
-import { authService } from "../services/auth.service";
-import { conversationService } from "../services/conversation.service";
-import { useChat } from "../hooks/userChat.ts";
+import { friendService } from "../services/friend.service";
+import type {User} from "../types/auth.type.ts";
+import {authService} from "../services/auth.service.ts";
+import {conversationService} from "../services/conversation.service.ts";
+import {useChat} from "../hooks/userChat.ts";
 
-export default function UserList() {
-    const [users, setUsers] = useState<any[]>([]);
-    const { setCurrentChat, setConversations } = useChat();
+export default function FriendList() {
+    const [friends, setFriends] = useState<any[]>([]);
     const currentUser = authService.getCurrentUser();
+    const { setCurrentChat, setConversations } = useChat();
+    const userId: string = currentUser?._id;
 
     useEffect(() => {
-        userService.getUsers(currentUser._id).then(setUsers);
+        friendService.getFriends(userId).then(setFriends);
     }, []);
 
     const handleSelectUser = async (user: any) => {
         try {
-            // 👉 tạo hoặc lấy conversation
+            // 👉 create or get conversation
             const conv = await conversationService.create(
                 currentUser._id,
                 user._id
             );
 
-            // 👉 update list nếu chưa có
+            // 👉 update list if not exists
             setConversations((prev: any[]) => {
                 const exists = prev.find((c) => c._id === conv._id);
                 if (exists) return prev;
                 return [...prev, conv];
             });
 
-            // 👉 set chat hiện tại
             setCurrentChat(conv);
         } catch (err) {
             console.error(err);
@@ -36,10 +37,9 @@ export default function UserList() {
     };
 
     return (
-        <div style={{ width: 200 }}>
-            <h4>Users</h4>
-
-            {users.map((u) => (
+        <div>
+            <h4>Friends</h4>
+            {friends.map((u) => (
                 <div
                     key={u._id}
                     onClick={() => handleSelectUser(u)}
@@ -48,6 +48,9 @@ export default function UserList() {
                     {u.username}
                 </div>
             ))}
+            {/*{friends.map((f) => (*/}
+            {/*    <div key={f._id}>{f.username}</div>*/}
+            {/*))}*/}
         </div>
     );
 }

@@ -78,7 +78,7 @@ export default function ChatBox() {
         setText("");
     };
 
-    if (!currentChat) return <div style={{ flex: 1 }}>Select a conversation</div>;
+    if (!currentChat) return <div style={{ flex: 1 }}>Chat with me</div>;
 
     return (
         <div style={{

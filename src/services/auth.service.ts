@@ -3,6 +3,7 @@ import { cache } from "../cache/cache";
 import type { RegisterPayload, User } from "../types/auth.type";
 
 const USER_KEY = "current_user";
+const TOKEN_USER = "token_user";
 
 export const authService = {
     async login(data: { email: string; password: string }): Promise<User> {
@@ -45,8 +46,23 @@ export const authService = {
         }
         return null;
     },
+    getToken() {
+        const token = cache.get(TOKEN_USER);
+        if (token) {
+            return token;
+        }
+        const stored = localStorage.getItem(USER_KEY);
+
+        if (stored) {
+            const user = JSON.parse(stored);
+            cache.set(TOKEN_USER, user.token);
+            return user.token;
+        }
+        return null;
+    },
 
     logout() {
         cache.delete(USER_KEY);
+        localStorage.removeItem(USER_KEY);
     }
 };
