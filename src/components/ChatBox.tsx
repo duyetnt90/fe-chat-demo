@@ -81,65 +81,47 @@ export default function ChatBox() {
     if (!currentChat) return <div style={{ flex: 1 }}>Chat with me</div>;
 
     return (
-        <div style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            height: "100vh"
-        }}>
-            <h4 style={{ padding: "10px" }}>Chat</h4>
-
-            {/* MESSAGE LIST */}
-            <div style={{
-                flex: 1,
-                overflowY: "auto",
-                padding: "10px",
-                background: "#f5f5f5"
-            }}>
+        <div className="d-flex flex-column h-100">
+            {/* Header */}
+            <div className="border-bottom p-3 fw-bold">
+                {currentChat ? "Chatting..." : "Select a conversation"}
+            </div>
+            {/* Messages */}
+            <div className="flex-grow-1 overflow-auto p-3">
                 {messages.map((m) => {
                     const isMe = m.senderId === senderId;
-
                     return (
                         <div
-                            key={m._id} // ✅ fix key duplicate
-                            style={{
-                                display: "flex",
-                                justifyContent: isMe ? "flex-end" : "flex-start",
-                                marginBottom: 10,
-                            }}
+                            key={m._id}
+                            className={`d-flex mb-2 ${isMe ? "justify-content-end" : ""}`}
                         >
                             <div
-                                style={{
-                                    padding: "8px 12px",
-                                    borderRadius: 12,
-                                    background: isMe ? "#0d6efd" : "#e4e6eb",
-                                    color: isMe ? "#fff" : "#000",
-                                    maxWidth: "60%",
-                                }}
+                                className={`p-2 rounded ${
+                                    isMe
+                                        ? "bg-primary text-white"
+                                        : "bg-light"
+                                }`}
+                                style={{maxWidth: "60%"}}
                             >
                                 {m.content}
                             </div>
                         </div>
                     );
                 })}
-
-                <div ref={scrollRef} />
             </div>
 
-            {/* INPUT */}
-            <div style={{
-                display: "flex",
-                gap: 10,
-                padding: 10,
-                borderTop: "1px solid #ddd"
-            }}>
+            {/* Input */}
+            <div className="border-top p-2 d-flex gap-2">
                 <input
+                    className="form-control"
                     value={content}
                     onChange={(e) => setText(e.target.value)}
-                    placeholder="Type message..."
-                    style={{ flex: 1, padding: 8 }}
+                    placeholder="Type a message..."
+                    onKeyDown={(e) => e.key === "Enter" && send()}
                 />
-                <button onClick={send}>Send</button>
+                <button className="btn btn-primary" onClick={send}>
+                    Send
+                </button>
             </div>
         </div>
     );
