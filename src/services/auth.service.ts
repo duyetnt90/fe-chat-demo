@@ -10,7 +10,6 @@ export const authService = {
         const res = await login(data);
 
         const user = res.data;
-        console.log("user ==> ", user)
         cache.set(USER_KEY, user);
 
         localStorage.setItem(USER_KEY, JSON.stringify(user));
@@ -46,6 +45,7 @@ export const authService = {
         }
         return null;
     },
+
     getToken() {
         const token = cache.get(TOKEN_USER);
         if (token) {

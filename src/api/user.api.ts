@@ -1,11 +1,12 @@
 import api from "./axios";
+import type {User} from "../types/auth.type.ts";
 
-export const getUsers = async (userId: string) => {
-    return await api.get(`/user/get-all/${userId}`);
+export const update = async (data: User) => {
+    return await api.put(`/user/profile`, data);
 };
 
-export const findUserById = async (userId: string) => {
-    return await api.get(`/user/${userId}`);
+export const getMe = async () => {
+    return await api.get(`/user/profile`);
 };
 export const search = async (keyword: string) => {
     return await api.get(`/user/search/${keyword}`);

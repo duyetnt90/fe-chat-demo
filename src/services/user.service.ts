@@ -1,22 +1,24 @@
-import {getUsers, findUserById, search} from "../api/user.api.ts";
+import {update, getMe, search} from "../api/user.api.ts";
 import { cache } from "../cache/cache";
 import type { User } from "../types/auth.type";
+const USER_KEY = "current_user";
 
 export const userService = {
-    async getUser(id: string): Promise<User> {
-        const cacheKey = `user_${id}`;
+    async getMe(): Promise<User> {
+        const cached: User = cache.get<User>(USER_KEY);
+        if (cached?.user) {
+            return cached?.user;
+        }
 
-        const cached = cache.get<User>(cacheKey);
-        if (cached) return cached;
+        const res = await getMe();
 
-        const res = await findUserById(id);
-
-        cache.set(cacheKey, res.data);
+        cache.set(USER_KEY, res.data);
 
         return res.data;
     },
-    getUsers: async (userId: string) => {
-        const res = await getUsers(userId);
+
+    update: async (data: User) => {
+        const res = await update(data);
         return res.data;
     },
 
