@@ -11,7 +11,7 @@ export const useChat = () => {
         throw new Error("useChat must be used within ChatProvider");
     }
 
-    const { setConversations, setCurrentChat } = context;
+    const { setConversations, setCurrentChat, conversations } = context;
 
     /**
      * @function create new conversation
@@ -19,6 +19,15 @@ export const useChat = () => {
      */
     const openChat = async (user: User) => {
         try {
+            const existing = conversations.find((c: any) =>
+                c.members.some((m: any) => m._id === user._id)
+            );
+
+            if (existing) {
+                setCurrentChat(existing);
+                return existing;
+            }
+
             const currentUser = authService.getCurrentUser();
 
             const conv = await conversationService.createConversationUserSelect(

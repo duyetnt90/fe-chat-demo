@@ -18,6 +18,12 @@ export default function ChatBox() {
     const senderId = user._id;
     const conversationId = currentChat?._id;
 
+    const currentChatUser = currentChat?.members?.find(
+        (u: any) => u._id !== senderId
+    );
+
+    console.log("currentChatUser: ", currentChatUser)
+
     // ✅ load message + socket realtime
     useEffect(() => {
         if (!conversationId) return;
@@ -88,16 +94,26 @@ export default function ChatBox() {
                         <div
                             key={m._id}
                             className={`d-flex mb-2 ${
-                                isMe ? "justify-content-end" : ""
+                                isMe ? "justify-content-end" : "align-items-end"
                             }`}
                         >
+                            {!isMe && (
+                                <img
+                                    src={currentChatUser?.avatar || "https://i.pravatar.cc/40"}
+                                    width={32}
+                                    height={32}
+                                    className="rounded-circle me-2"
+                                />
+                            )}
+
+                            {/* 👇 Bubble */}
                             <div
                                 className={`p-2 rounded ${
                                     isMe
                                         ? "bg-primary text-white"
                                         : "bg-light"
                                 }`}
-                                style={{maxWidth: "60%"}}
+                                style={{ maxWidth: "60%" }}
                             >
                                 {m.content}
                             </div>

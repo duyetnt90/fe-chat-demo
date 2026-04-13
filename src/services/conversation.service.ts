@@ -1,9 +1,13 @@
-import {createConversation,} from "../api/conversation.api";
+import {createConversation, getConversations} from "../api/conversation.api";
 import type {User} from "../types/auth.type.ts";
 
 let cache: any[] = [];
 
 export const conversationService = {
+    getConversations: async (userId: string) => {
+        const res = await getConversations(userId);
+        return res.data;
+    },
     async createConversationUserSelect(user: User, currentUser: User) {
         try {
             return await this.create(
