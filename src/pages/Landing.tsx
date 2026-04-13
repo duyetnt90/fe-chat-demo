@@ -3,10 +3,12 @@ import { authService } from "../services/auth.service.ts";
 import type { RegisterPayload } from "../types/auth.type";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useAuth } from "../context/auth.context";
 
 export default function Landing() {
     const [isLogin, setIsLogin] = useState(true);
     const navigate = useNavigate();
+    const { login } = useAuth();
 
     const [form, setForm] = useState<RegisterPayload>({
         name: "",
@@ -27,7 +29,7 @@ export default function Landing() {
 
         try {
             if (isLogin) {
-                await authService.login({
+                await login({
                     email: form.email,
                     password: form.password
                 });

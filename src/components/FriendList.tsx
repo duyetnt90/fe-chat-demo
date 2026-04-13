@@ -3,7 +3,7 @@ import { friendService } from "../services/friend.service";
 import type {User} from "../types/auth.type.ts";
 import {authService} from "../services/auth.service.ts";
 import {conversationService} from "../services/conversation.service.ts";
-import {useChat} from "../hooks/userChat.ts";
+import { useChat } from "../hooks/useChat.ts";
 
 export default function FriendList() {
     const [friends, setFriends] = useState<any[]>([]);

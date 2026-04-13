@@ -6,7 +6,7 @@ import FriendRequestList from "../components/FriendRequestList";
 
 export default function ChatPage() {
     return (
-        <div className="d-flex vh-100">
+        <div className="d-flex box-chat-vh-95">
 
             {/* Sidebar */}
             <div className="border-end p-3" style={{width: 300}}>

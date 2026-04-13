@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useChat } from "../hooks/userChat.ts";
+import { useChat } from "../hooks/useChat.ts";
 import { messageService } from "../services/message.service";
 import { authService } from "../services/auth.service";
 import { socketService } from "../socket/socket.service";
@@ -39,8 +39,6 @@ export default function ChatBox() {
         const handleMessage = (msg: any) => {
             if (msg.conversationId !== conversationId) return;
 
-            console.log("Log message: ", msg)
-
             setMessages((prev) => {
                 const exists = prev.some((m) => m._id === msg._id);
                 if (exists) return prev;
@@ -56,7 +54,6 @@ export default function ChatBox() {
         };
     }, [conversationId]);
 
-    // ✅ auto scroll xuống cuối
     useEffect(() => {
         scrollRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
@@ -82,18 +79,22 @@ export default function ChatBox() {
 
     return (
         <div className="d-flex flex-column h-100">
+
             {/* Header */}
-            <div className="border-bottom p-3 fw-bold">
-                {currentChat ? "Chatting..." : "Select a conversation"}
+            <div className="border-bottom p-2">
+                Chat
             </div>
-            {/* Messages */}
+
             <div className="flex-grow-1 overflow-auto p-3">
                 {messages.map((m) => {
                     const isMe = m.senderId === senderId;
+
                     return (
                         <div
                             key={m._id}
-                            className={`d-flex mb-2 ${isMe ? "justify-content-end" : ""}`}
+                            className={`d-flex mb-2 ${
+                                isMe ? "justify-content-end" : ""
+                            }`}
                         >
                             <div
                                 className={`p-2 rounded ${
@@ -108,9 +109,9 @@ export default function ChatBox() {
                         </div>
                     );
                 })}
+                <div ref={scrollRef}></div>
             </div>
 
-            {/* Input */}
             <div className="border-top p-2 d-flex gap-2">
                 <input
                     className="form-control"

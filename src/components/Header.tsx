@@ -1,18 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import { authService } from "../services/auth.service";
 import { useEffect, useState } from "react";
+import { useAuth } from "../context/auth.context";
 
 export default function Header() {
     const navigate = useNavigate();
-    const [user, setUser] = useState<any>(null);
+    // const [user, setUser] = useState<any>(null);
+    const { user, logout } = useAuth();
 
-    useEffect(() => {
-        setUser(authService.getCurrentUser());
-    }, []);
+    // useEffect(() => {
+    //     setUser(authService.getCurrentUser());
+    // }, []);
 
     const handleLogout = () => {
         authService.logout();
-        setUser(null);
+        logout()
+        // setUser(null);
         navigate("/");
     };
     return (

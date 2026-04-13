@@ -9,12 +9,12 @@ export const authService = {
     async login(data: { email: string; password: string }): Promise<User> {
         const res = await login(data);
 
-        const user = res.data;
-        cache.set(USER_KEY, user);
+        const dataLogin = res.data;
+        cache.set(USER_KEY, dataLogin);
 
-        localStorage.setItem(USER_KEY, JSON.stringify(user));
+        localStorage.setItem(USER_KEY, JSON.stringify(dataLogin));
 
-        return user;
+        return dataLogin?.user;
     },
 
     async register(data: RegisterPayload): Promise<User> {
