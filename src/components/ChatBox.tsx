@@ -15,7 +15,6 @@ export default function ChatBox() {
     const scrollRef = useRef<HTMLDivElement>(null);
 
     const user: User = authService.getCurrentUser();
-    console.log("USRRRR: ", user)
 
     const senderId = user._id;
     const conversationId = currentChat?._id;
@@ -24,7 +23,6 @@ export default function ChatBox() {
         (u: any) => u._id !== senderId
     );
 
-    console.log("currentChatUser: ", currentChatUser)
 
     // ✅ load message + socket realtime
     useEffect(() => {
