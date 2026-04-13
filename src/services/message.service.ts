@@ -1,4 +1,5 @@
 import { getMessages, sendMessageApi } from "../api/message.api";
+import type {MessagePayload} from "../types/message.type.ts";
 
 const cache: Record<string, any[]> = {};
 
@@ -12,7 +13,7 @@ export const messageService = {
         return res.data;
     },
 
-    async send(data: any) {
+    async send(data: MessagePayload) {
         const res = await sendMessageApi(data);
 
         if (!cache[data.conversationId]) {

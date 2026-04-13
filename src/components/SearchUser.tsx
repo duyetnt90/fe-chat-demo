@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { userService } from "../services/user.service";
 import { friendService } from "../services/friend.service";
+import {useChat} from "../hooks/useChat.ts";
 
 export default function SearchUser() {
     const [keyword, setKeyword] = useState("");
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const { openChat } = useChat();
 
     const search = async () => {
         if (!keyword.trim()) return;
@@ -66,23 +68,34 @@ export default function SearchUser() {
                         </div>
 
                         {/* Right */}
-                        <button
-                            onClick={() => addFriend(u._id)}
-                            disabled={u.friendStatus !== "none"}
-                            className={`btn btn-sm ${
-                                u.friendStatus === "pending"
-                                    ? "btn-secondary"
-                                    : u.friendStatus === "accepted"
-                                        ? "btn-success"
-                                        : "btn-outline-primary"
-                            }`}
-                        >
-                            {u.friendStatus === "pending"
-                                ? "Requested"
-                                : u.friendStatus === "accepted"
-                                    ? "Friend"
-                                    : "Add Friend"}
-                        </button>
+                        <div>
+                            {u.friendStatus === "none" && (
+                                <button
+                                    className="btn btn-sm btn-outline-primary"
+                                    onClick={() => addFriend(u._id)}
+                                >
+                                    Add
+                                </button>
+                            )}
+
+                            {u.friendStatus === "pending" && (
+                                <button
+                                    className="btn btn-sm btn-secondary"
+                                    disabled
+                                >
+                                    Requested
+                                </button>
+                            )}
+
+                            {u.friendStatus === "accepted" && (
+                                <span
+                                    style={{ cursor: "pointer" }}
+                                    onClick={() => openChat(u)}
+                                >
+                                    💬
+                                </span>
+                            )}
+                        </div>
                     </div>
                 ))}
             </div>

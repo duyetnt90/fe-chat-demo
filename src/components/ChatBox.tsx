@@ -18,10 +18,6 @@ export default function ChatBox() {
     const senderId = user._id;
     const conversationId = currentChat?._id;
 
-    const receiverId = currentChat?.members.find(
-        (id: string) => id !== senderId
-    );
-
     // ✅ load message + socket realtime
     useEffect(() => {
         if (!conversationId) return;
@@ -64,7 +60,6 @@ export default function ChatBox() {
         const msg = {
             conversationId,
             senderId,
-            receiverId,
             content,
         };
 
