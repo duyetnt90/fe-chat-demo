@@ -50,7 +50,7 @@ export default function SearchUser() {
             {loading && <div className="text-muted">Searching...</div>}
 
             {/* Result list */}
-            <div>
+            <div className="search-user-container">
                 {users.map((u) => (
                     <div
                         key={u._id}

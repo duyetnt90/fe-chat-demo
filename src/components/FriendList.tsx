@@ -16,7 +16,6 @@ export default function FriendList() {
 
     return (
         <div>
-            <h4>Friends</h4>
             {friends.map((u) => (
                 <div
                     key={u._id}

@@ -13,10 +13,10 @@ export default function FriendRequestList() {
         await friendService.accept(id);
         setRequests((prev) => prev.filter((record) => record._id !== id));
     };
-
+    if (!requests || requests.length === 0) return null;
     return (
         <div className={styles.friendRequests}>
-            <h4 className={styles.title}>Friend Requests</h4>
+            <h6 className={styles.title}>Friend Requests</h6>
 
             {requests.map((record) => (
                 <div key={record._id} className={styles.requestItem}>

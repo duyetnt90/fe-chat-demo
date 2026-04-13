@@ -55,7 +55,7 @@
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
-  border-inline: 1px solid var(--border);
+  border-inline: 1px solid #e3e4e8;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -125,4 +125,18 @@ code {
 
 .box-chat-vh-95 {
   height: 94vh !important
+}
+
+.search-user-container {
+  max-height: 300px;   /* 🔥 giới hạn chiều cao */
+  overflow-y: auto;    /* 🔥 scroll riêng */
+  padding-right: 5px;
+}
+.search-user-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-user-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
 }

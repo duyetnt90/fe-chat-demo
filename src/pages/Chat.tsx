@@ -9,13 +9,11 @@ export default function ChatPage() {
         <div className="d-flex box-chat-vh-95">
 
             {/* Sidebar */}
-            <div className="border-end p-3" style={{width: 300}}>
-                <h5 className="mb-3">Chat App</h5>
-
+            <div className="d-flex flex-column border-end" style={{width: 300}}>
                 <SearchUser/>
-                <hr/>
+                {/*<hr/>*/}
                 <FriendRequestList/>
-                <hr/>
+                {/*<hr/>*/}
                 <FriendList/>
             </div>
 
