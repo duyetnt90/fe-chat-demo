@@ -9,7 +9,6 @@ export default function ProfilePage() {
     }, []);
 
     const handleChange = (e: any) => {
-        console.log("user: ", user)
         setUser({ ...user, [e.target.name]: e.target.value });
     };
 
@@ -46,8 +45,8 @@ export default function ProfilePage() {
             <input
                 className="form-control mb-2"
                 name="username"
-                placeholder="Username"
-                value={user?.username}
+                placeholder="Name"
+                value={user?.name}
                 onChange={handleChange}
             />
 

@@ -2,18 +2,26 @@ import { useState } from "react";
 import { authService } from "../services/auth.service.ts";
 import type { RegisterPayload } from "../types/auth.type";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function Landing() {
     const [isLogin, setIsLogin] = useState(true);
     const navigate = useNavigate();
 
     const [form, setForm] = useState<RegisterPayload>({
+        name: "",
         username: "",
         email: "",
         password: "",
         avatar: ""
     });
 
+    useEffect(() => {
+        const user = authService.getCurrentUser();
+        if (user) {
+            navigate("/chat");
+        }
+    }, []);
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -23,11 +31,20 @@ export default function Landing() {
                     email: form.email,
                     password: form.password
                 });
+                navigate("/chat");
             } else {
                 await authService.register(form);
-            }
 
-            navigate("/chat");
+                setForm({
+                    name: "",
+                    username: "",
+                    email: "",
+                    password: "",
+                    avatar: ""
+                });
+                setIsLogin(true);
+                alert("Registration successful! Please log in.");
+            }
         } catch (err) {
             console.error(err);
         }
@@ -45,9 +62,22 @@ export default function Landing() {
                         <div className="mb-3">
                             <input
                                 className="form-control"
-                                placeholder="Username"
+                                placeholder="Full name"
+                                value={form.name}
                                 onChange={(e) =>
-                                    setForm({ ...form, username: e.target.value })
+                                    setForm({...form, name: e.target.value})
+                                }
+                            />
+                        </div>
+                    )}
+                    {!isLogin && (
+                        <div className="mb-3">
+                            <input
+                                className="form-control"
+                                placeholder="Username"
+                                value={form.username}
+                                onChange={(e) =>
+                                    setForm({...form, username: e.target.value})
                                 }
                             />
                         </div>
@@ -57,8 +87,9 @@ export default function Landing() {
                         <input
                             className="form-control"
                             placeholder="Email"
+                            value={form.email}
                             onChange={(e) =>
-                                setForm({ ...form, email: e.target.value })
+                                setForm({...form, email: e.target.value})
                             }
                         />
                     </div>
@@ -68,8 +99,9 @@ export default function Landing() {
                             type="password"
                             className="form-control"
                             placeholder="Password"
+                            value={form.password}
                             onChange={(e) =>
-                                setForm({ ...form, password: e.target.value })
+                                setForm({...form, password: e.target.value})
                             }
                         />
                     </div>
@@ -85,8 +117,8 @@ export default function Landing() {
                     onClick={() => setIsLogin(!isLogin)}
                 >
                     {isLogin
-                        ? "Chưa có tài khoản? Đăng ký"
-                        : "Đã có tài khoản? Đăng nhập"}
+                        ? "I don't have an account yet. Register"
+                        : "I already have an account. Login"}
                 </p>
             </div>
         </div>

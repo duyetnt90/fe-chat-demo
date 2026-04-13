@@ -39,20 +39,20 @@ export default function FriendList() {
     return (
         <div>
             <h4>Friends</h4>
-            {friends.map((f) => (
+            {friends.map((u) => (
                 <div
-                    key={f._id}
+                    key={u._id}
                     className="d-flex align-items-center gap-2 p-2 rounded hover-bg"
                     style={{ cursor: "pointer" }}
-                    onClick={() => handleSelectUser(f)}
+                    onClick={() => handleSelectUser(u)}
                 >
                     <img
-                        src={f.avatar || "https://i.pravatar.cc/40"}
+                        src={u.avatar || "https://i.pravatar.cc/40"}
                         width={40}
                         height={40}
                         className="rounded-circle"
                     />
-                    <span>{f.username}</span>
+                    <span>{u.name}</span>
                 </div>
             ))}
 

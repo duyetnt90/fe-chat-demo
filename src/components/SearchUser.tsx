@@ -62,7 +62,7 @@ export default function SearchUser() {
                                 height={36}
                                 className="rounded-circle"
                             />
-                            <span>{u.username}</span>
+                            <span>{u.name}</span>
                         </div>
 
                         {/* Right */}

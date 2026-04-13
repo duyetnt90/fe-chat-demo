@@ -1,0 +1,56 @@
+.friendRequests {
+    background: #fff;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.title {
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.requestItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    transition: background 0.2s ease;
+}
+
+.requestItem:hover {
+    background: #f5f7fb;
+}
+
+.userInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #ddd;
+}
+
+.username {
+    font-weight: 500;
+}
+
+.btnAccept {
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.btnAccept:hover {
+    background: #43a047;
+}
