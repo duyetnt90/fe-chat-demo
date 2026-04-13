@@ -1,21 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { authService } from "../services/auth.service";
-import { useEffect, useState } from "react";
 import { useAuth } from "../context/auth.context";
+import {getAvatarUrl} from "../utils/comom.ts";
 
 export default function Header() {
     const navigate = useNavigate();
-    // const [user, setUser] = useState<any>(null);
     const { user, logout } = useAuth();
-
-    // useEffect(() => {
-    //     setUser(authService.getCurrentUser());
-    // }, []);
 
     const handleLogout = () => {
         authService.logout();
         logout()
-        // setUser(null);
         navigate("/");
     };
     return (
@@ -29,7 +23,7 @@ export default function Header() {
                     <span>{user.name}</span>
 
                     <img
-                        src={user.avatar || "https://i.pravatar.cc/40"}
+                        src={getAvatarUrl(user.avatar)}
                         width={36}
                         height={36}
                         className="rounded-circle"

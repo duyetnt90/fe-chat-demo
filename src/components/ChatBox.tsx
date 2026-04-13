@@ -4,6 +4,7 @@ import { messageService } from "../services/message.service";
 import { authService } from "../services/auth.service";
 import { socketService } from "../socket/socket.service";
 import type { User } from "../types/auth.type.ts";
+import {getAvatarUrl} from "../utils/comom.ts";
 
 export default function ChatBox() {
     const { currentChat } = useChat();
@@ -14,6 +15,7 @@ export default function ChatBox() {
     const scrollRef = useRef<HTMLDivElement>(null);
 
     const user: User = authService.getCurrentUser();
+    console.log("USRRRR: ", user)
 
     const senderId = user._id;
     const conversationId = currentChat?._id;
@@ -99,7 +101,7 @@ export default function ChatBox() {
                         >
                             {!isMe && (
                                 <img
-                                    src={currentChatUser?.avatar || "https://i.pravatar.cc/40"}
+                                    src={getAvatarUrl(currentChatUser?.avatar)}
                                     width={32}
                                     height={32}
                                     className="rounded-circle me-2"

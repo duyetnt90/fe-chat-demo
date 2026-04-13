@@ -17,7 +17,7 @@ export const userService = {
         return res.data;
     },
 
-    update: async (data: User) => {
+    update: async (data: FormData) => {
         const res = await update(data);
         return res.data;
     },

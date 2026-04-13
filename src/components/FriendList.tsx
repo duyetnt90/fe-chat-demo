@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { friendService } from "../services/friend.service";
 import {authService} from "../services/auth.service.ts";
 import { useChat } from "../hooks/useChat.ts";
+import {getAvatarUrl} from "../utils/comom.ts";
 
 export default function FriendList() {
     const [friends, setFriends] = useState<any[]>([]);
@@ -24,7 +25,7 @@ export default function FriendList() {
                     onClick={() => openChat(u)}
                 >
                     <img
-                        src={u.avatar || "https://i.pravatar.cc/40"}
+                        src={getAvatarUrl(u.avatar)}
                         width={40}
                         height={40}
                         className="rounded-circle"

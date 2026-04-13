@@ -2,6 +2,7 @@ import { useState } from "react";
 import { userService } from "../services/user.service";
 import { friendService } from "../services/friend.service";
 import {useChat} from "../hooks/useChat.ts";
+import {getAvatarUrl} from "../utils/comom.ts";
 
 export default function SearchUser() {
     const [keyword, setKeyword] = useState("");
@@ -59,7 +60,7 @@ export default function SearchUser() {
                         {/* Left */}
                         <div className="d-flex align-items-center gap-2">
                             <img
-                                src={u.avatar || "https://i.pravatar.cc/40"}
+                                src={getAvatarUrl(u.avatar)}
                                 width={36}
                                 height={36}
                                 className="rounded-circle"

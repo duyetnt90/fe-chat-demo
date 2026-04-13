@@ -1,6 +1,6 @@
-import { login, register } from "../api/auth.api";
-import { cache } from "../cache/cache";
-import type { RegisterPayload, User } from "../types/auth.type";
+import {login, register} from "../api/auth.api";
+import {cache} from "../cache/cache";
+import type {RegisterPayload, User} from "../types/auth.type";
 
 const USER_KEY = "current_user";
 const TOKEN_USER = "token_user";
@@ -10,40 +10,44 @@ export const authService = {
         const res = await login(data);
 
         const dataLogin = res.data;
-        cache.set(USER_KEY, dataLogin);
+        const user = dataLogin?.user;
+        const token = dataLogin?.token;
+        cache.set(USER_KEY, user);
+        cache.set(TOKEN_USER, token);
 
-        localStorage.setItem(USER_KEY, JSON.stringify(dataLogin));
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
+        localStorage.setItem(TOKEN_USER, token);
 
-        return dataLogin?.user;
+        return user;
     },
 
     async register(data: RegisterPayload): Promise<User> {
         const res = await register(data);
 
-        const user = res.data;
-
-        cache.set(USER_KEY, user);
-        localStorage.setItem(USER_KEY, JSON.stringify(user));
-
-        return user;
+        const dataRes = res.data;
+        return dataRes?.user;
     },
 
     getCurrentUser(): User | null {
         // 1. check memory trước
         const cached = cache.get(USER_KEY);
         if (cached) {
-            return cached?.user;
+            return cached;
         }
         // 2. fallback localStorage
         const stored = localStorage.getItem(USER_KEY);
 
         if (stored) {
             const user = JSON.parse(stored);
-            // sync lại memory
             cache.set(USER_KEY, user);
             return user;
         }
         return null;
+    },
+
+    setCurrentUser(user): User | null {
+        localStorage.setItem(USER_KEY, JSON.stringify(user));
+        cache.set(USER_KEY, user);
     },
 
     getToken() {
@@ -51,18 +55,18 @@ export const authService = {
         if (token) {
             return token;
         }
-        const stored = localStorage.getItem(USER_KEY);
+        const cacheToken = localStorage.getItem(TOKEN_USER);
 
-        if (stored) {
-            const user = JSON.parse(stored);
-            cache.set(TOKEN_USER, user.token);
-            return user.token;
+        if (cacheToken) {
+            return cacheToken;
         }
         return null;
     },
 
     logout() {
         cache.delete(USER_KEY);
+        cache.delete(TOKEN_USER);
         localStorage.removeItem(USER_KEY);
+        localStorage.removeItem(TOKEN_USER);
     }
 };

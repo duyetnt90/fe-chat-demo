@@ -1,8 +1,8 @@
 import api from "./axios";
 import type {User} from "../types/auth.type.ts";
 
-export const update = async (data: User) => {
-    return await api.put(`/user/profile`, data);
+export const update = async (data: FormData) => {
+    return await api.put("/user/profile", data);
 };
 
 export const getMe = async () => {
