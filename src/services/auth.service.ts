@@ -1,17 +1,18 @@
 import {login, register} from "../api/auth.api";
 import {cache} from "../cache/cache";
-import type {RegisterPayload, User} from "../types/auth.type";
+import type {AuthResponse, LoginPayload, RegisterPayload, User} from "../types/auth.type";
+import type {AxiosResponse} from "axios";
 
 const USER_KEY = "current_user";
 const TOKEN_USER = "token_user";
 
 export const authService = {
-    async login(data: { email: string; password: string }): Promise<User> {
-        const res = await login(data);
+    async login(data: LoginPayload): Promise<User> {
+        const res: AxiosResponse = await login(data);
 
-        const dataLogin = res.data;
-        const user = dataLogin?.user;
-        const token = dataLogin?.token;
+        const dataLogin: AuthResponse = res.data;
+        const user: User = dataLogin.user;
+        const token: string = dataLogin.token;
         cache.set(USER_KEY, user);
         cache.set(TOKEN_USER, token);
 
@@ -22,30 +23,36 @@ export const authService = {
     },
 
     async register(data: RegisterPayload): Promise<User> {
-        const res = await register(data);
+        const res: AxiosResponse = await register(data);
 
-        const dataRes = res.data;
-        return dataRes?.user;
+        return res.data;
     },
 
-    getCurrentUser(): User | null {
-        // 1. check memory trước
-        const cached = cache.get(USER_KEY);
-        if (cached) {
-            return cached;
-        }
-        // 2. fallback localStorage
-        const stored = localStorage.getItem(USER_KEY);
+    getCurrentUser() {
+        try {
+            // 1. check memory
+            let user: User | null = cache.get(USER_KEY);
+            if (user) {
+                return user;
+            }
+            // 2. fallback localStorage
+            const stored = localStorage.getItem(USER_KEY);
 
-        if (stored) {
-            const user = JSON.parse(stored);
-            cache.set(USER_KEY, user);
-            return user;
+            if (stored) {
+                user = JSON.parse(stored);
+                cache.set(USER_KEY, user);
+                return user;
+            }
+
+            return null;
+        } catch (err) {
+            console.error(err)
+            return null;
         }
-        return null;
+
     },
 
-    setCurrentUser(user): User | null {
+    setCurrentUser(user: User): void {
         localStorage.setItem(USER_KEY, JSON.stringify(user));
         cache.set(USER_KEY, user);
     },

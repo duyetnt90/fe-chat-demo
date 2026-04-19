@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { authService } from "../services/auth.service";
-import type {User} from "../types/auth.type.ts";
+import type {LoginPayload, User} from "../types/auth.type.ts";
 
 type AuthContextType = {
     user: any;
@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }: any) => {
         if (currentUser) setUser(currentUser);
     }, []);
 
-    const login = async (data: any) => {
+    const login = async (data: LoginPayload) => {
         const user: User = await authService.login(data);
         setUser(user);
     };

@@ -7,11 +7,11 @@ import {getAvatarUrl} from "../utils/comom.ts";
 export default function FriendList() {
     const [friends, setFriends] = useState<any[]>([]);
     const currentUser = authService.getCurrentUser();
-    const userId: string = currentUser?._id;
     const { openChat } = useChat();
 
     useEffect(() => {
-        friendService.getFriends(userId).then(setFriends);
+        if (!currentUser?._id) return;
+        friendService.getFriends(currentUser._id).then(setFriends);
     }, []);
 
 

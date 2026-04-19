@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { authService } from "../services/auth.service.ts";
-import type { RegisterPayload } from "../types/auth.type";
+import type {RegisterPayload} from "../types/auth.type";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuth } from "../context/auth.context";
+import {socketService} from "../socket/socket.service.ts";
 
 export default function Landing() {
     const [isLogin, setIsLogin] = useState(true);
@@ -21,6 +22,7 @@ export default function Landing() {
     useEffect(() => {
         const user = authService.getCurrentUser();
         if (user) {
+            socketService.connect(user._id);
             navigate("/chat");
         }
     }, []);

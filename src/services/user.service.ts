@@ -5,9 +5,9 @@ const USER_KEY = "current_user";
 
 export const userService = {
     async getMe(): Promise<User> {
-        const cached: User = cache.get<User>(USER_KEY);
-        if (cached?.user) {
-            return cached?.user;
+        const user: User | null = cache.get<User>(USER_KEY);
+        if (user) {
+            return user;
         }
 
         const res = await getMe();

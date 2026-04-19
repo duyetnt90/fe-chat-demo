@@ -29,6 +29,9 @@ export const useChat = () => {
             }
 
             const currentUser = authService.getCurrentUser();
+            if (!currentUser) {
+                return user;
+            }
 
             const conv = await conversationService.createConversationUserSelect(
                 user,

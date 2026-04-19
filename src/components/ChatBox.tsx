@@ -3,8 +3,8 @@ import { useChat } from "../hooks/useChat.ts";
 import { messageService } from "../services/message.service";
 import { authService } from "../services/auth.service";
 import { socketService } from "../socket/socket.service";
-import type { User } from "../types/auth.type.ts";
 import {getAvatarUrl} from "../utils/comom.ts";
+import type {MessagePayload} from "../types/message.type.ts";
 
 export default function ChatBox() {
     const { currentChat } = useChat();
@@ -14,10 +14,10 @@ export default function ChatBox() {
 
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    const user: User = authService.getCurrentUser();
+    const user = authService.getCurrentUser();
 
-    const senderId = user._id;
-    const conversationId = currentChat?._id;
+    const senderId: string = user?._id || '';
+    const conversationId: string = currentChat?._id || '';
 
     const currentChatUser = currentChat?.members?.find(
         (u: any) => u._id !== senderId
@@ -63,7 +63,7 @@ export default function ChatBox() {
     const send = async () => {
         if (!content.trim() || !conversationId) return;
 
-        const msg = {
+        const msg: MessagePayload = {
             conversationId,
             senderId,
             content,

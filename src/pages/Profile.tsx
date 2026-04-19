@@ -3,24 +3,31 @@ import { userService } from "../services/user.service";
 import { authService } from "../services/auth.service";
 import { useAuth } from "../context/auth.context";
 import {getAvatarUrl} from "../utils/comom.ts"
+import type {User} from "../types/auth.type.ts";
 
 export default function ProfilePage() {
     let [user, setLocalUser] = useState<any>(null);//setUser
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [preview, setPreview] = useState<string>("");
     const { setUser } = useAuth();
+    const MAX_SIZE: number = 2 * 1024 * 1024; // 2MB
+
+    const ALLOWED_TYPES: string[] = [
+        "image/jpeg",
+        "image/png",
+        "image/webp"
+    ];
 
     useEffect(() => {
-        userService.getMe().then((data) => {
+        userService.getMe().then((data: User) => {
             setUser(data);
             setLocalUser(data);
             if (!avatarFile) {
-                setPreview(data.avatar);
+                setPreview(data.avatar ?? '');
             }
         });
     }, []);
 
-    console.log("user: ", user)
 
     const handleChange = (e: any) => {
         setLocalUser({ ...user, [e.target.name]: e.target.value });
@@ -30,6 +37,19 @@ export default function ProfilePage() {
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
+        // validate type
+        if (!ALLOWED_TYPES.includes(file.type)) {
+            alert("Chỉ cho phép JPG, PNG, WEBP");
+            e.target.value = "";
+            return;
+        }
+
+        // validate size
+        if (file.size > MAX_SIZE) {
+            alert("Ảnh tối đa 2MB");
+            e.target.value = "";
+            return;
+        }
         setAvatarFile(file);
         // preview image
         const previewUrl = URL.createObjectURL(file);
@@ -40,6 +60,24 @@ export default function ProfilePage() {
      * @function update Profile
      */
     const save = async () => {
+        const name = user.name?.trim() || "";
+        const content = user.content?.trim() || "";
+
+        if (!name) {
+            alert("Full name không được để trống");
+            return;
+        }
+
+        if (name.length > 100) {
+            alert("Full name tối đa 100 ký tự");
+            return;
+        }
+
+        if (content.length > 500) {
+            alert("Content tối đa 500 ký tự");
+            return;
+        }
+
         try {
             const formData = new FormData();
 
@@ -88,7 +126,7 @@ export default function ProfilePage() {
                     type="file"
                     name="avatar"
                     className="form-control"
-                    accept="image/*"
+                    accept="image/png,image/jpeg,image/webp"
                     onChange={handleFileChange}
                 />
             </div>
