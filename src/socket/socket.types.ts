@@ -1,12 +1,15 @@
 export interface SendMessagePayload {
-    roomId: string;
-    context: string;
+    conversationId: string;
     senderId: string;
+    content: string;
+    type?: "text" | "image";
 }
 
 export interface ReceiveMessagePayload {
-    roomId: string;
-    context: string;
+    conversationId: string;
     senderId: string;
+    content: string;
+    type?: "text" | "image";
     createdAt: string;
+    _id: string;
 }

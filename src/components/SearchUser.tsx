@@ -8,27 +8,39 @@ export default function SearchUser() {
     const [keyword, setKeyword] = useState("");
     const [users, setUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
     const { openChat } = useChat();
 
     const search = async () => {
         if (!keyword.trim()) return;
 
         setLoading(true);
-        const res = await userService.search(keyword);
-        setUsers(res);
-        setLoading(false);
+        setError(null);
+
+        try {
+            const res = await userService.search(keyword);
+            setUsers(res);
+        } catch (err: any) {
+            setError(err.response?.data?.message || "Search failed");
+            setUsers([]);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const addFriend = async (id: string) => {
-        await friendService.sendRequest(id);
-
-        setUsers((prev) =>
-            prev.map((u) =>
-                u._id === id
-                    ? { ...u, friendStatus: "pending" }
-                    : u
-            )
-        );
+        try {
+            await friendService.sendRequest(id);
+            setUsers((prev) =>
+                prev.map((u) =>
+                    u._id === id
+                        ? { ...u, friendStatus: "pending" }
+                        : u
+                )
+            );
+        } catch (err: any) {
+            setError(err.response?.data?.message || "Failed to send friend request");
+        }
     };
 
     return (
@@ -49,6 +61,9 @@ export default function SearchUser() {
 
             {/* Loading */}
             {loading && <div className="text-muted">Searching...</div>}
+
+            {/* Error */}
+            {error && <div className="alert alert-danger">{error}</div>}
 
             {/* Result list */}
             <div className="search-user-container">

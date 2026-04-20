@@ -12,7 +12,7 @@ export default function FriendList() {
     useEffect(() => {
         if (!currentUser?._id) return;
         friendService.getFriends(currentUser._id).then(setFriends);
-    }, []);
+    }, [currentUser?._id]); // Add currentUser._id dependency
 
 
     return (

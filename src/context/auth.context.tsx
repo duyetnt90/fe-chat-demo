@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { authService } from "../services/auth.service";
+import { socketService } from "../socket/socket.service";
 import type {LoginPayload, User} from "../types/auth.type.ts";
 
 type AuthContextType = {
@@ -16,12 +17,18 @@ export const AuthProvider = ({ children }: any) => {
 
     useEffect(() => {
         const currentUser = authService.getCurrentUser();
-        if (currentUser) setUser(currentUser);
+        if (currentUser) {
+            setUser(currentUser);
+            // Connect to socket if user is already logged in
+            socketService.connect();
+        }
     }, []);
 
     const login = async (data: LoginPayload) => {
         const user: User = await authService.login(data);
         setUser(user);
+        // Connect to socket after successful login
+        await socketService.connect();
     };
 
     const logout = () => {
