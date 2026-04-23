@@ -43,11 +43,6 @@ export const authService = {
         cache.set(USER_KEY, user);
     },
 
-    getToken() {
-        // Token is now in HttpOnly cookie, not accessible from JavaScript
-        return null;
-    },
-
     logout() {
         cache.delete(USER_KEY);
         // Clear the HttpOnly cookie by making a logout request

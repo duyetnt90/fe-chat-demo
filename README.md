@@ -77,7 +77,7 @@ Tạo file `.env`
 
 ```env
 VITE_API_URL=http://localhost:3000
-VITE_SOCKET_URL=http://localhost:3001
+VITE_SOCKET_URL=http://localhost:3000
 ```
 
 ### 4. Run project
